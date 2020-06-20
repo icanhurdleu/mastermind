@@ -11,9 +11,27 @@ class Game
     @guesses = []
     @valid_guesses = ["r", "b", "p", "g", "y", "o"]
     @code = generate_code
-    @guess_tracker = Array.new(12) { Array.new(2) }
+    @guess_tracker = create_empty_guess_tracker
     @guess_number = 0
   end
+
+  def play
+    loop do 
+      if @guess_number == 12
+        puts "Sorry..., you did not guess the code."
+        return
+      end
+      guess = request_guess
+      if guess == code
+        puts "Congrats! You guessed the code!"
+        return
+      end
+      evaluate_guess(guess)
+      print_board
+      @guess_number += 1
+    end
+  end
+
 
   def generate_code
     code = []
@@ -21,6 +39,10 @@ class Game
       code.append(COLORS_LETTER.sample)
     end
     code
+  end
+
+  def create_empty_guess_tracker
+    Array.new(12) { Array.new(2) }
   end
 
   def request_guess
@@ -36,7 +58,6 @@ class Game
       if guess.size == 4 && valid_colors
         unless @guesses.include?(guess)
           @guesses.append(guess)
-          p @guesses
           return guess
         end
       end
@@ -57,17 +78,28 @@ class Game
     code_hash = code.each_with_object(Hash.new(0)) do |letter, new_hash|
       new_hash[letter] += 1
     end
+    # add reds
     for i in 0..3
       if code.include?(guess[i])
         if code[i] == guess[i]
           guess_evaluation[:reds] += 1
           code_hash[guess[i]] -= 1
-        elsif code_hash[guess[i]] > 0
+        # elsif code_hash[guess[i]] > 0
+        #   guess_evaluation[:whites] += 1
+        #   code_hash[guess[i]] -= 1
+        end
+      end
+    end
+    # add whites
+    for i in 0..3
+      if code.include?(guess[i])
+        if code_hash[guess[i]] > 0
           guess_evaluation[:whites] += 1
           code_hash[guess[i]] -= 1
         end
       end
     end
+
     guess_tracker[guess_number][0] = guess
     guess_tracker[guess_number][1] = guess_evaluation
   end
@@ -104,7 +136,4 @@ class Board
 end
 
 test = Game.new
-p test.code
-guess = test.request_guess
-test.evaluate_guess(guess)
-test.print_board
+test.play
