@@ -15,6 +15,18 @@ class Game
     @guess_number = 0
   end
 
+  def intro
+    puts "\n\nWelcome to Mastermind!"
+    puts "In this game you will be tasked to guess a randomly generated code"
+    puts "The available colors and their designations are:"
+    puts "\tred = r \n\tblue = b \n\tpurple = p \n\tgreen = g \n\tyellow = y \n\torange = o"
+    puts "\nYou have 12 total turns to guess the code."
+    puts "Each turn, your guess will be evaluated and displayed."
+    puts "'R' designates a correct color and correct location."
+    puts "'W' designates a correct color but incorrect location."
+    puts "Good luck!\n"
+  end 
+
   def play
     loop do 
       if @guess_number == 12
@@ -23,7 +35,9 @@ class Game
       end
       guess = request_guess
       if guess == code
+        puts "\n*******************************"
         puts "Congrats! You guessed the code!"
+        puts "*******************************"
         return
       end
       evaluate_guess(guess)
@@ -48,7 +62,7 @@ class Game
   def request_guess
     # gets guess from human player
     # guess is stored as an array, e.g. ["r", "b", "p", "y"]
-    puts "Enter your guess, using a letter to designate each color,"
+    puts "\nEnter your guess, using a letter to designate each color,"
     puts " and separated by spaces"
     loop do 
       puts "red = r, blue = b, purple = p, green = g, yellow = y, orange = o"
@@ -123,17 +137,8 @@ class Game
     print "\n"
   end
 
-
 end
 
-class Board
-  # handles generating and outputing the board 
-  attr_reader :board
-
-  def initialize
-    # code
-  end
-end
-
-test = Game.new
-test.play
+example_game = Game.new
+example_game.intro
+example_game.play
